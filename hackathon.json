@@ -3,6 +3,11 @@
   "language": "de",
   "timezone": "Europe/Berlin",
   "staleMinutes": 45,
+  "usage": {
+    "warnAt": 80,
+    "handoffAt": 92,
+    "releaseIfResetInMin": 15
+  },
   "allowAiAttribution": false,
   "previewDir": "",
   "team": [

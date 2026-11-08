@@ -51,5 +51,9 @@
   "attribution": {
     "commit": "",
     "pr": ""
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node .github/hack/statusline.mjs"
   }
 }
