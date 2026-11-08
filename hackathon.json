@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "language": "de",
+  "timezone": "Europe/Berlin",
+  "staleMinutes": 45,
+  "allowAiAttribution": false,
+  "previewDir": "",
+  "team": [
+    "adrijus-lazdauskas"
+  ],
+  "board": 1,
+  "radio": 2,
+  "mainBranch": "main",
+  "pagesUrl": "https://adrijus-lazdauskas.github.io/hack-sandbox/"
+}
