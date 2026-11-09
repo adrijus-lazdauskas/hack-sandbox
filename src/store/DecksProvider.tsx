@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { CardInput, CardStatus, Deck } from '../types';
 import { DecksContext, type DecksApi } from './context';
-import { STORAGE_KEY, browserStorage, loadDecks, saveDecks } from './persist';
+import { createSampleDeck } from '../lib/sample';
+import { STORAGE_KEY, browserStorage, initialDecks, loadDecks, saveDecks } from './persist';
 
 // crypto.randomUUID only exists in secure contexts; plain http on a phone in the LAN lacks it.
 function newId(): string {
@@ -12,7 +13,7 @@ function newId(): string {
 
 // Decks are kept in state and mirrored to localStorage under 'lernkarten.v1'.
 export function DecksProvider({ children }: { children: ReactNode }) {
-  const [decks, setDecks] = useState<Deck[]>(() => loadDecks(browserStorage()));
+  const [decks, setDecks] = useState<Deck[]>(() => initialDecks(browserStorage(), () => createSampleDeck(newId)));
   // Last state that matches storage, so loading never writes back (and keeps unreadable data untouched).
   const stored = useRef(decks);
 

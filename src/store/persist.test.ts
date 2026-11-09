@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Deck } from '../types';
-import { STORAGE_KEY, loadDecks, saveDecks } from './persist';
+import { createSampleDeck } from '../lib/sample';
+import { STORAGE_KEY, initialDecks, loadDecks, saveDecks } from './persist';
 
 function memoryStorage(initial?: string) {
   const data = new Map<string, string>(initial === undefined ? [] : [[STORAGE_KEY, initial]]);
@@ -68,5 +69,35 @@ describe('saveDecks / loadDecks', () => {
     };
     expect(loadDecks(throwing)).toEqual([]);
     expect(() => saveDecks(throwing, [deck])).not.toThrow();
+  });
+});
+
+describe('initialDecks', () => {
+  let n = 0;
+  const sample = () => createSampleDeck(() => `id${n++}`);
+
+  it('creates the sample deck when nothing was ever saved', () => {
+    const decks = initialDecks(memoryStorage(), sample);
+    expect(decks).toHaveLength(1);
+    expect(decks[0].name).toMatch(/^Beispiel/);
+    expect(decks[0].cards.length).toBeGreaterThanOrEqual(5);
+    expect(decks[0].cards.every((c) => c.status === 'new')).toBe(true);
+    expect(new Set([decks[0].id, ...decks[0].cards.map((c) => c.id)]).size).toBe(decks[0].cards.length + 1);
+  });
+
+  it('does not bring the sample back once the decks were saved empty', () => {
+    const storage = memoryStorage();
+    saveDecks(storage, []);
+    expect(initialDecks(storage, sample)).toEqual([]);
+  });
+
+  it('loads saved decks instead of the sample', () => {
+    const storage = memoryStorage();
+    saveDecks(storage, [deck]);
+    expect(initialDecks(storage, sample)).toEqual([deck]);
+  });
+
+  it('does not treat broken data as a first start', () => {
+    expect(initialDecks(memoryStorage('{kaputt'), sample)).toEqual([]);
   });
 });
