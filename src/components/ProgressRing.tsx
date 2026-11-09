@@ -22,7 +22,7 @@ export function ProgressRing({ percent, size = 62, color = 'currentColor' }: { p
         />
       )}
       <text x="50%" y="50%" dominantBaseline="central" textAnchor="middle" fill={color} fontSize={size / 4} fontWeight={800}>
-        {p}%
+        {`${p}\u202F%`}
       </text>
     </svg>
   );
