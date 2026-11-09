@@ -10,6 +10,9 @@ export interface DecksApi {
   /** New cards get status 'new'. */
   addCards(deckId: string, cards: CardInput[]): void;
   setCardStatus(deckId: string, cardId: string, status: CardStatus): void;
+  /** Changes question and answer; the card keeps its status. */
+  updateCard(deckId: string, cardId: string, card: CardInput): void;
+  deleteCard(deckId: string, cardId: string): void;
 }
 
 export const DecksContext = createContext<DecksApi | null>(null);

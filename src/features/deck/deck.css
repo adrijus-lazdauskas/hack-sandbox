@@ -10,12 +10,13 @@
 .deck-actions .btn { padding: 14px 10px; }
 
 .deck-cards { display: grid; gap: 8px; list-style: none; padding: 0; margin: 0; }
-.deck-card { background: var(--surface); border-radius: 16px; padding: 14px 16px; display: grid; grid-template-columns: 10px 1fr; gap: 12px; align-items: start; }
+.deck-card { width: 100%; text-align: left; background: var(--surface); border-radius: 16px; padding: 14px 16px; display: grid; grid-template-columns: 10px 1fr; gap: 12px; align-items: start; }
+.deck-card:hover { background: var(--surface-2); }
 .deck-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 7px; background: var(--surface-2); }
 .deck-dot.known { background: var(--yes); }
 .deck-dot.unknown { background: var(--no); }
-.deck-q { font-weight: 600; overflow-wrap: anywhere; }
-.deck-a { color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+.deck-q { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.deck-a { display: block; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
 
 .deck-danger { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--surface-2); }
 .deck-danger p { margin: 0 0 12px; }
