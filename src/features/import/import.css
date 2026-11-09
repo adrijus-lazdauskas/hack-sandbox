@@ -1,0 +1,11 @@
+.import-text { font-weight: 400; line-height: 1.6; }
+.import-status { display: flex; gap: 8px; flex-wrap: wrap; font-size: 14px; margin: -2px 0 10px; }
+.import-pill { padding: 4px 10px; border-radius: 99px; font-weight: 700; font-size: 13px; }
+.import-pill.ok { background: rgba(61, 220, 151, 0.15); color: var(--yes); }
+.import-pill.err { background: rgba(255, 107, 107, 0.15); color: var(--no); }
+
+.import-skipped { list-style: none; margin: 0 0 14px; padding: 10px 12px; border-radius: 14px; background: var(--bg); font-size: 13px; display: grid; gap: 4px; }
+.import-skipped li { display: flex; gap: 8px; min-width: 0; }
+.import-skipped b { color: var(--no); white-space: nowrap; }
+.import-reason { color: var(--text); white-space: nowrap; }
+.import-skipped code { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
