@@ -4,6 +4,7 @@ import { navigate } from '../../router';
 import { useDecks } from '../../store';
 import { ImportSheet } from '../import/ImportSheet';
 import { AddCardSheet } from './AddCardSheet';
+import { EditCardSheet } from './EditCardSheet';
 import { EditDeckSheet } from './EditDeckSheet';
 import './deck.css';
 
@@ -12,11 +13,13 @@ type SheetName = 'add' | 'import' | 'edit' | null;
 export function DeckScreen({ deckId }: { deckId: string }) {
   const deck = useDecks().getDeck(deckId);
   const [sheet, setSheet] = useState<SheetName>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const close = () => setSheet(null);
 
   // Briefly undefined right after deleting, before the route changes.
   if (!deck) return null;
   const stats = deckStats(deck);
+  const editing = deck.cards.find((c) => c.id === editingId);
 
   return (
     <div className="wrap">
@@ -52,16 +55,18 @@ export function DeckScreen({ deckId }: { deckId: string }) {
       {deck.cards.length ? (
         <ul className="deck-cards" role="list">
           {deck.cards.map((card) => (
-            <li key={card.id} className="deck-card">
-              <span
-                className={`deck-dot ${card.status}`}
-                role="img"
-                aria-label={card.status === 'known' ? 'gewusst' : card.status === 'unknown' ? 'nicht gewusst' : 'neu'}
-              />
-              <div>
-                <div className="deck-q">{card.question}</div>
-                <div className="deck-a">{card.answer}</div>
-              </div>
+            <li key={card.id}>
+              <button type="button" className="deck-card" onClick={() => setEditingId(card.id)}>
+                <span
+                  className={`deck-dot ${card.status}`}
+                  role="img"
+                  aria-label={card.status === 'known' ? 'gewusst' : card.status === 'unknown' ? 'nicht gewusst' : 'neu'}
+                />
+                <span>
+                  <span className="deck-q">{card.question}</span>
+                  <span className="deck-a">{card.answer}</span>
+                </span>
+              </button>
             </li>
           ))}
         </ul>
@@ -72,6 +77,7 @@ export function DeckScreen({ deckId }: { deckId: string }) {
       <ImportSheet deckId={deck.id} open={sheet === 'import'} onClose={close} />
       {sheet === 'add' && <AddCardSheet deckId={deck.id} onClose={close} />}
       {sheet === 'edit' && <EditDeckSheet deck={deck} onClose={close} />}
+      {editing && <EditCardSheet key={editing.id} deckId={deck.id} card={editing} onClose={() => setEditingId(null)} />}
     </div>
   );
 }
