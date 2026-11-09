@@ -5,7 +5,7 @@
 
 Several Claude Code agents (one per team member) build this repo at the same time, coordinated through GitHub issues by the `hack` plugin. The humans own the idea and the product decisions; the agents build.
 
-- **Board:** issue #1 (live state) · **Team radio:** issue #2 · **Preview:** https://adrijus-lazdauskas.github.io/hack-sandbox/ (app) and https://adrijus-lazdauskas.github.io/hack-sandbox/mockups/
+- **Board:** issue #10 (live state) · **Team radio:** issue #11 · **Preview:** https://adrijus-lazdauskas.github.io/hack-sandbox/ (app) and https://adrijus-lazdauskas.github.io/hack-sandbox/mockups/
 - **Start working:** `/hack:work`. One task at a time, always claimed with `hack next`. Never work on a task someone else holds.
 - **Stay in your lane:** each task has an Area (the folders or files it owns). Keep changes there and mention anything outside it in the PR.
 - **Ask, don't stall:** product, design and scope questions go to the humans with `hack ask` (2 to 4 options plus your recommendation). Then take another task; the answer frees the blocked one. Technical decisions are yours.

@@ -11,10 +11,11 @@
   "allowAiAttribution": false,
   "previewDir": "",
   "team": [
-    "adrijus-lazdauskas"
+    "adrijus-lazdauskas",
+    "maximilian467"
   ],
-  "board": 1,
-  "radio": 2,
+  "board": 10,
+  "radio": 11,
   "mainBranch": "main",
   "pagesUrl": "https://adrijus-lazdauskas.github.io/hack-sandbox/"
 }
