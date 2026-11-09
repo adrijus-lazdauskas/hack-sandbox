@@ -60,6 +60,12 @@ export function DecksProvider({ children }: { children: ReactNode }) {
           ...d,
           cards: d.cards.map((c) => (c.id === cardId ? { ...c, status } : c)),
         })),
+      updateCard: (deckId, cardId, card: CardInput) =>
+        updateDeck(deckId, (d) => ({
+          ...d,
+          cards: d.cards.map((c) => (c.id === cardId ? { ...c, question: card.question, answer: card.answer } : c)),
+        })),
+      deleteCard: (deckId, cardId) => updateDeck(deckId, (d) => ({ ...d, cards: d.cards.filter((c) => c.id !== cardId) })),
     }),
     [decks, updateDeck],
   );

@@ -119,6 +119,8 @@ export function useDecks(): {
   deleteDeck(id: string): void;
   addCards(deckId: string, cards: CardInput[]): void; // new cards get status 'new'
   setCardStatus(deckId: string, cardId: string, status: CardStatus): void;
+  updateCard(deckId: string, cardId: string, card: CardInput): void; // keeps the status
+  deleteCard(deckId: string, cardId: string): void;
 };
 ```
 
