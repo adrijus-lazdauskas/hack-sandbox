@@ -16,7 +16,7 @@ function DeckTile({ deck }: { deck: Deck }) {
       </span>
       <span className="decks-tile-name">{deck.name}</span>
       <span className="decks-tile-meta">
-        {stats.total} {stats.total === 1 ? 'Karte' : 'Karten'} · {stats.unknown} offen
+        {stats.total} {stats.total === 1 ? 'Karte' : 'Karten'} · {stats.unknown} nicht gewusst
       </span>
     </a>
   );

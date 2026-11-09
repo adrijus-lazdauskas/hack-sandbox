@@ -62,3 +62,10 @@ input:focus, textarea:focus { outline: none; border-color: var(--brand); }
 @media (min-width: 900px) {
   .wrap { padding-top: 90px; }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
