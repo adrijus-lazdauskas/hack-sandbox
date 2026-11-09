@@ -2,6 +2,14 @@
 
 Was das Team entschieden hat. Neue Entscheidungen kommen oben dazu, mit Datum und Quelle.
 
+## Technik und Plan ohne Abstimmungsrunde
+
+*09.11.2026, Adrijus im Chat: Plan-Schritt ohne Rückfragen, Standard-Stack des Kits („Ja, direkt anlegen“).*
+
+- Vite + React + TypeScript, normales CSS, Hash-Routing, Daten im localStorage, kein Backend. Details in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+- Die Tasks auf dem Board wurden ohne Durchsicht durch die Menschen angelegt. Was nicht passt, bitte im Team-Funk (#11) melden.
+- Einen Beispielstapel beim ersten Start gibt es vorerst nicht, solange die offene Frage unten nicht entschieden ist.
+
 ## Design-Richtung: B „Kacheln“
 
 *09.11.2026, Antwort von Adrijus auf [#13](https://github.com/adrijus-lazdauskas/hack-sandbox/issues/13): „Variante B“. Keine Änderungswünsche.*
