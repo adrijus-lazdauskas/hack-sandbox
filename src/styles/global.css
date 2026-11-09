@@ -1,0 +1,64 @@
+/* Design tokens and base styles from mockups/b.html ("Kacheln"). */
+:root {
+  --bg: #15141f;
+  --surface: #211f30;
+  --surface-2: #2b2940;
+  --text: #f4f2ff;
+  --muted: #a9a5c4;
+  --yes: #3ddc97;
+  --no: #ff6b6b;
+  --brand: #8b7bff;
+  /* Dark text on the light deck colours. */
+  --on-tile: #16131f;
+  --radius: 22px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font: 16px/1.45 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; }
+button:disabled { cursor: default; opacity: 0.5; }
+a { color: inherit; }
+
+h1 { font-size: 30px; line-height: 1.15; margin: 2px 0 0; letter-spacing: -0.02em; }
+h2 { font-size: 18px; margin: 26px 0 12px; }
+
+/* Page frame: room for the tab bar at the bottom on phones and at the top on desktops. */
+.wrap { max-width: 1000px; margin: 0 auto; padding: 20px 16px 110px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.muted { color: var(--muted); }
+
+/* Buttons */
+.btn { border-radius: 16px; padding: 14px 18px; font-weight: 700; background: var(--surface-2); text-align: center; }
+.btn.primary { background: var(--brand); color: #fff; }
+.btn.big { width: 100%; padding: 18px; font-size: 18px; }
+.icon-btn { width: 42px; height: 42px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; font-size: 20px; text-decoration: none; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.row .btn { flex: 1; }
+
+/* Form fields used in sheets */
+.field { display: block; font-weight: 700; font-size: 14px; margin-bottom: 12px; }
+.field small { display: block; color: var(--muted); font-weight: 500; }
+input[type='text'], textarea {
+  width: 100%;
+  margin-top: 6px;
+  background: var(--bg);
+  border: 2px solid var(--surface-2);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+textarea { min-height: 170px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; }
+input:focus, textarea:focus { outline: none; border-color: var(--brand); }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+@media (min-width: 900px) {
+  .wrap { padding-top: 90px; }
+}

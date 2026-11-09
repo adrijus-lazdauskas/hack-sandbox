@@ -1,0 +1,5 @@
+.sheet-bg { position: fixed; inset: 0; background: rgba(5, 4, 12, 0.6); display: flex; align-items: flex-end; justify-content: center; z-index: 20; }
+.sheet { background: var(--surface); width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto; border-radius: 26px 26px 0 0; padding: 12px 20px 28px; animation: sheet-up 0.25s ease-out; }
+.sheet-grab { width: 40px; height: 5px; border-radius: 3px; background: var(--surface-2); margin: 0 auto 16px; }
+.sheet h2 { margin-top: 0; font-size: 22px; }
+@keyframes sheet-up { from { transform: translateY(40px); opacity: 0; } }
