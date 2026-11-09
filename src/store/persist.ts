@@ -39,6 +39,20 @@ export function loadDecks(storage: Reader | undefined): Deck[] {
   }
 }
 
+/**
+ * Decks to start with: the sample deck when nothing was ever saved, otherwise what is stored.
+ * Broken data does not count as a first start, so the sample never overwrites it.
+ */
+export function initialDecks(storage: Reader | undefined, sample: () => Deck): Deck[] {
+  let firstStart: boolean;
+  try {
+    firstStart = !storage || storage.getItem(STORAGE_KEY) === null;
+  } catch {
+    firstStart = true;
+  }
+  return firstStart ? [sample()] : loadDecks(storage);
+}
+
 /** Saves all decks as { version: 1, decks }. Fails silently when storage is unavailable or full. */
 export function saveDecks(storage: Writer | undefined, decks: Deck[]): void {
   try {
