@@ -1,0 +1,7 @@
+/* Bottom on phones, top-centre pill from 900 px. */
+.tabbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px; display: flex; gap: 6px; background: rgba(33, 31, 48, 0.92); backdrop-filter: blur(10px); padding: 6px; border-radius: 22px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); z-index: 10; }
+.tabbar a { padding: 10px 18px; border-radius: 16px; font-weight: 700; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.tabbar a[aria-current='page'] { background: var(--surface-2); color: var(--text); }
+@media (min-width: 900px) {
+  .tabbar { top: 44px; bottom: auto; }
+}
