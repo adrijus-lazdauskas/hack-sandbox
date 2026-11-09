@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup A – Notizbuch</title>
+<style>
+  :root {
+    --paper: #f6f3ec;
+    --panel: #ffffff;
+    --ink: #24211c;
+    --muted: #6f685d;
+    --line: #e2dccf;
+    --accent: #2f6f6a;
+    --accent-soft: #e3efed;
+    --red: #b5483b;
+    --green: #3c7a46;
+    --rule: #c9dbe8;
+    --margin: #e6a29a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--paper); }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  .mock-note { background: #24211c; color: #f6f3ec; font-size: 13px; text-align: center; padding: 4px 12px; }
+
+  .app { display: grid; grid-template-columns: 300px 1fr; min-height: calc(100vh - 29px); }
+  .sidebar { border-right: 1px solid var(--line); background: #fbf9f4; padding: 20px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; padding: 0 4px 8px; }
+  .brand-mark { width: 28px; height: 20px; border-radius: 3px; background: #fff; border: 1px solid var(--line); box-shadow: 3px 3px 0 var(--accent); }
+  .deck-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+  .deck-item { width: 100%; text-align: left; background: none; border: 1px solid transparent; border-radius: 8px; padding: 10px 12px; }
+  .deck-item:hover { background: #f1ede3; }
+  .deck-item.active { background: var(--panel); border-color: var(--line); box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .deck-item .name { font-weight: 600; display: block; }
+  .deck-item .meta { font-size: 13px; color: var(--muted); }
+  .bar { height: 6px; background: #ebe6da; border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .bar > span { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+  .sidebar .total { margin-top: auto; font-size: 13px; color: var(--muted); padding: 8px 4px 0; border-top: 1px solid var(--line); }
+
+  .btn { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 9px 14px; font-weight: 600; }
+  .btn:hover { border-color: #cfc7b6; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { background: #275d59; }
+  .btn.block { width: 100%; }
+  .btn.ghost { background: none; border-color: transparent; color: var(--muted); padding-left: 0; }
+
+  .main { padding: 32px 40px; max-width: 860px; width: 100%; }
+  .backlink { display: inline-block; margin-bottom: 8px; }
+  @media (min-width: 801px) { .app[data-view="deck"] .backlink { display: none; } }
+  h1 { font-size: 26px; line-height: 1.25; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 28px 0 10px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 8px; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .stat b { display: block; font-size: 24px; }
+  .stat span { font-size: 13px; color: var(--muted); }
+
+  .card-list { list-style: none; margin: 0; padding: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  .card-list li { display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; padding: 12px 16px; border-top: 1px solid var(--line); align-items: start; }
+  .card-list li:first-child { border-top: 0; }
+  .card-list .a { color: var(--muted); }
+  .tag { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .tag.known { background: #e1efe3; color: var(--green); }
+  .tag.unknown { background: #f6e1de; color: var(--red); }
+  .tag.new { background: #eeeae0; color: var(--muted); }
+
+  .field { display: block; margin: 0 0 14px; }
+  .field span { display: block; font-weight: 600; margin-bottom: 6px; }
+  .field small { display: block; color: var(--muted); font-weight: 400; }
+  input[type=text], textarea { width: 100%; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 10px 12px; }
+  textarea { min-height: 180px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 14px; }
+  input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  .parse { font-size: 14px; margin: -4px 0 16px; }
+  .parse .ok { color: var(--green); font-weight: 600; }
+  .parse .err { color: var(--red); }
+
+  /* Index card for study mode */
+  .study { display: flex; flex-direction: column; align-items: center; gap: 20px; padding-top: 8px; }
+  .study-top { width: 100%; max-width: 560px; display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); }
+  .flip { width: 100%; max-width: 560px; aspect-ratio: 5 / 3; perspective: 1200px; cursor: pointer; }
+  .flip-inner { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
+  .flip.turned .flip-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; background: #fff; border-radius: 6px; box-shadow: 0 2px 0 #e7e1d4, 0 10px 24px rgba(60,50,30,.12); padding: 52px 28px 28px;
+    background-image: linear-gradient(var(--margin), var(--margin)), repeating-linear-gradient(#fff 0 31px, var(--rule) 31px 32px);
+    background-size: 100% 2px, 100% 100%; background-position: 0 40px, 0 40px; background-repeat: no-repeat, repeat;
+    display: flex; align-items: center; justify-content: center; text-align: center; font-size: 22px; font-weight: 600; }
+  .face .label { position: absolute; top: 12px; left: 16px; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .face.back { transform: rotateY(180deg); font-weight: 500; }
+  .hint { color: var(--muted); font-size: 14px; margin: 0; }
+  .answer-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 560px; }
+  .answer-btns .btn { padding: 14px; }
+  .btn.no { color: var(--red); border-color: #e6c2bc; }
+  .btn.yes { color: #fff; background: var(--green); border-color: var(--green); }
+
+  .result { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 28px; max-width: 560px; }
+  .big { font-size: 48px; font-weight: 700; line-height: 1; color: var(--accent); }
+
+  .empty { color: var(--muted); padding: 40px 0; }
+
+  @media (max-width: 800px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { border-right: 0; padding: 16px; }
+    .main { padding: 16px; }
+    .app[data-view="home"] .main { display: none; }
+    .app:not([data-view="home"]) .sidebar { display: none; }
+    .stats { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .stat { padding: 10px; }
+    .stat b { font-size: 20px; }
+    .card-list li { grid-template-columns: 1fr auto; }
+    .card-list .a { grid-column: 1 / 2; grid-row: 2; }
+    .face { font-size: 19px; padding: 48px 18px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="mock-note">Mockup A „Notizbuch“ · Beispieldaten, nichts wird gespeichert</div>
+<div class="app" id="app" data-view="home">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+// Sample data in German. Cards: q = question, a = answer, known = true | false | null (not asked yet).
+const IMPORT_SAMPLE = [
+  'Was misst das BIP?;Den Wert aller in einem Jahr im Inland hergestellten Waren und Dienstleistungen',
+  'Was ist Inflation?;Ein anhaltender Anstieg des allgemeinen Preisniveaus',
+  'Wofür steht EZB?;Europäische Zentralbank',
+  'Was beschreibt die Phillips-Kurve?;Den Zusammenhang zwischen Inflation und Arbeitslosigkeit',
+  'Was ist der Leitzins?;Der Zins, zu dem sich Geschäftsbanken Geld bei der Zentralbank leihen'
+].join('\n');
+
+let nextId = 4;
+const decks = [
+  { id: 1, name: 'Biochemie – Aminosäuren', cards: [
+    ['Welche Aminosäure bildet Disulfidbrücken?', 'Cystein', true],
+    ['Wie viele proteinogene Aminosäuren gibt es?', '20 (plus Selenocystein und Pyrrolysin)', true],
+    ['Welche Aminosäure ist nicht chiral?', 'Glycin', true],
+    ['Was ist ein Zwitterion?', 'Ein Molekül mit positiver und negativer Ladung, nach außen neutral', false],
+    ['Welche Aminosäure hat einen Imidazolring?', 'Histidin', true],
+    ['Was ist der isoelektrische Punkt?', 'Der pH-Wert, bei dem die Nettoladung null ist', false],
+    ['Welche Aminosäuren sind aromatisch?', 'Phenylalanin, Tyrosin, Tryptophan', true],
+    ['Welche Bindung verknüpft Aminosäuren?', 'Die Peptidbindung', null]
+  ]},
+  { id: 2, name: 'Statistik I – Grundbegriffe', cards: [
+    ['Was ist der Median?', 'Der mittlere Wert einer geordneten Datenreihe', true],
+    ['Was misst die Varianz?', 'Die mittlere quadratische Abweichung vom Mittelwert', false],
+    ['Was ist ein p-Wert?', 'Die Wahrscheinlichkeit, unter H0 ein mindestens so extremes Ergebnis zu sehen', false],
+    ['Was ist ein Konfidenzintervall?', 'Ein Bereich, der den wahren Parameter mit festgelegter Sicherheit überdeckt', null],
+    ['Korrelation oder Kausalität?', 'Korrelation ist ein Zusammenhang, Kausalität eine Ursache-Wirkungs-Beziehung', true],
+    ['Was ist ein Fehler 1. Art?', 'H0 wird verworfen, obwohl sie stimmt', null]
+  ]},
+  { id: 3, name: 'Spanisch A2 – Verben', cards: [
+    ['tener', 'haben', true], ['poder', 'können', true], ['querer', 'wollen, lieben', true],
+    ['salir', 'ausgehen, hinausgehen', false], ['conocer', 'kennen, kennenlernen', true]
+  ]}
+].map(d => ({ ...d, cards: d.cards.map(([q, a, known]) => ({ q, a, known })) }));
+
+const state = { view: 'home', deckId: 1, idx: 0, turned: false, session: { yes: 0, no: 0 }, queue: [] };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const deck = () => decks.find(d => d.id === state.deckId);
+const known = d => d.cards.filter(c => c.known === true).length;
+const pct = d => d.cards.length ? Math.round(known(d) / d.cards.length * 100) : 0;
+
+function parseLines(text) {
+  const cards = [], errors = [];
+  text.split('\n').forEach((line, i) => {
+    if (!line.trim()) return;
+    const at = line.indexOf(';');
+    const q = at < 0 ? '' : line.slice(0, at).trim();
+    const a = at < 0 ? '' : line.slice(at + 1).trim();
+    if (q && a) cards.push({ q, a, known: null }); else errors.push(i + 1);
+  });
+  return { cards, errors };
+}
+
+function go(view, extra = {}) { Object.assign(state, { view }, extra); render(); window.scrollTo(0, 0); }
+
+function renderSidebar() {
+  const all = decks.reduce((n, d) => n + d.cards.length, 0);
+  const k = decks.reduce((n, d) => n + known(d), 0);
+  $('#sidebar').innerHTML = `
+    <div class="brand"><span class="brand-mark"></span>Lernkarten</div>
+    <button class="btn primary block" data-act="new">+ Neuer Stapel</button>
+    <ul class="deck-list">${decks.map(d => `
+      <li><button class="deck-item ${d.id === state.deckId && state.view !== 'home' ? 'active' : ''}" data-deck="${d.id}">
+        <span class="name">${esc(d.name)}</span>
+        <span class="meta">${d.cards.length} Karten · ${pct(d)} % gewusst</span>
+        <div class="bar"><span style="width:${pct(d)}%"></span></div>
+      </button></li>`).join('')}
+    </ul>
+    <div class="total">${decks.length} Stapel · ${k} von ${all} Karten gewusst</div>`;
+}
+
+function renderMain() {
+  const d = deck();
+  const back = `<button class="btn ghost backlink" data-act="${['study', 'done', 'import', 'add'].includes(state.view) ? 'deck' : 'home'}">← Zurück</button>`;
+  let html = '';
+
+  if (state.view === 'home') {
+    html = `<h1>Willkommen zurück</h1><p class="sub">Wähle links einen Stapel oder lege einen neuen an.</p>
+      <div class="empty">Tipp: Fragen aus deinen Notizen kannst du als Text importieren, eine Karte pro Zeile.</div>`;
+  }
+
+  if (state.view === 'deck') {
+    const unknown = d.cards.filter(c => c.known === false).length;
+    const fresh = d.cards.filter(c => c.known === null).length;
+    html = `${back}<h1>${esc(d.name)}</h1><p class="sub">${d.cards.length} Karten</p>
+      <div class="stats">
+        <div class="stat"><b>${pct(d)} %</b><span>gewusst</span></div>
+        <div class="stat"><b>${unknown}</b><span>nicht gewusst</span></div>
+        <div class="stat"><b>${fresh}</b><span>noch nicht abgefragt</span></div>
+      </div>
+      <div class="bar" style="height:8px"><span style="width:${pct(d)}%"></span></div>
+      <div class="actions">
+        <button class="btn primary" data-act="study" ${d.cards.length ? '' : 'disabled'}>Abfrage starten</button>
+        <button class="btn" data-act="import">Aus Text importieren</button>
+        <button class="btn" data-act="add">Karte hinzufügen</button>
+      </div>
+      <h2>Karten</h2>
+      ${d.cards.length ? `<ul class="card-list">${d.cards.map(c => `
+        <li><span>${esc(c.q)}</span><span class="a">${esc(c.a)}</span>
+        ${c.known === true ? '<span class="tag known">gewusst</span>' : c.known === false ? '<span class="tag unknown">nicht gewusst</span>' : '<span class="tag new">neu</span>'}</li>`).join('')}
+      </ul>` : '<p class="empty">Noch keine Karten. Importiere sie aus Text oder füge eine einzelne Karte hinzu.</p>'}`;
+  }
+
+  if (state.view === 'new') {
+    html = `${back}<h1>Neuer Stapel</h1><p class="sub">Gib dem Stapel einen Namen, Karten kommen im nächsten Schritt dazu.</p>
+      <form id="newForm">
+        <label class="field"><span>Name</span><input type="text" id="deckName" value="Makroökonomie – Klausur" required></label>
+        <button class="btn primary">Stapel anlegen</button>
+      </form>`;
+  }
+
+  if (state.view === 'import') {
+    html = `${back}<h1>Aus Text importieren</h1><p class="sub">in „${esc(d.name)}“</p>
+      <form id="importForm">
+        <label class="field"><span>Karten als Text<small>Eine Karte pro Zeile: Frage;Antwort</small></span>
+          <textarea id="importText">${esc(IMPORT_SAMPLE)}</textarea></label>
+        <div class="parse" id="parse"></div>
+        <button class="btn primary" id="importBtn">Karten importieren</button>
+      </form>`;
+  }
+
+  if (state.view === 'add') {
+    html = `${back}<h1>Karte hinzufügen</h1><p class="sub">in „${esc(d.name)}“</p>
+      <form id="addForm">
+        <label class="field"><span>Frage</span><input type="text" id="q" value="Was ist Stagflation?" required></label>
+        <label class="field"><span>Antwort</span><input type="text" id="a" value="Stagnierende Wirtschaft bei gleichzeitig hoher Inflation" required></label>
+        <button class="btn primary">Speichern</button>
+      </form>`;
+  }
+
+  if (state.view === 'study') {
+    const c = state.queue[state.idx];
+    html = `${back}<div class="study">
+      <div class="study-top"><span>${esc(d.name)}</span><span>Karte ${state.idx + 1} von ${state.queue.length}</span></div>
+      <div class="bar" style="width:100%;max-width:560px"><span style="width:${state.idx / state.queue.length * 100}%"></span></div>
+      <div class="flip ${state.turned ? 'turned' : ''}" data-act="turn">
+        <div class="flip-inner">
+          <div class="face front"><span class="label">Frage</span>${esc(c.q)}</div>
+          <div class="face back"><span class="label">Antwort</span>${esc(c.a)}</div>
+        </div>
+      </div>
+      <div id="controls" style="display:contents">${controlsHtml()}</div>
+    </div>`;
+  }
+
+  if (state.view === 'done') {
+    const s = state.session;
+    html = `${back}<div class="result">
+      <p class="sub" style="margin:0 0 8px">Runde beendet · ${esc(d.name)}</p>
+      <div class="big">${s.yes} / ${s.yes + s.no}</div>
+      <p>Karten gewusst in dieser Runde. Der Stapel steht jetzt bei <b>${pct(d)} %</b>.</p>
+      <div class="bar" style="height:8px;margin:12px 0 20px"><span style="width:${pct(d)}%"></span></div>
+      <div class="actions">
+        ${s.no ? '<button class="btn primary" data-act="retry">Nicht gewusste wiederholen</button>' : ''}
+        <button class="btn" data-act="deck">Zum Stapel</button>
+      </div>
+    </div>`;
+  }
+
+  $('#main').innerHTML = html;
+
+  const ta = $('#importText');
+  if (ta) {
+    const update = () => {
+      const { cards, errors } = parseLines(ta.value);
+      $('#parse').innerHTML = `<span class="ok">${cards.length} Karten erkannt</span>` +
+        (errors.length ? ` · <span class="err">Zeile ${errors.join(', ')} ohne „;“ oder leer, wird übersprungen</span>` : '');
+      $('#importBtn').textContent = `${cards.length} Karten importieren`;
+    };
+    ta.addEventListener('input', update); update();
+  }
+}
+
+function controlsHtml() {
+  return state.turned
+    ? `<div class="answer-btns"><button class="btn no" data-act="no">✗ Nicht gewusst</button><button class="btn yes" data-act="yes">✓ Gewusst</button></div><p class="hint">Tastatur: N oder J</p>`
+    : `<button class="btn primary" data-act="turn" style="min-width:220px">Karte umdrehen</button><p class="hint">oder auf die Karte tippen · Leertaste</p>`;
+}
+
+// Flip in place so the CSS transition plays instead of re-rendering the card.
+function flip() {
+  state.turned = !state.turned;
+  $('.flip').classList.toggle('turned', state.turned);
+  $('#controls').innerHTML = controlsHtml();
+}
+
+function render() {
+  $('#app').dataset.view = state.view;
+  renderSidebar(); renderMain();
+}
+
+function startStudy(onlyUnknown) {
+  const d = deck();
+  const queue = onlyUnknown ? d.cards.filter(c => c.known === false) : [...d.cards];
+  go('study', { queue, idx: 0, turned: false, session: { yes: 0, no: 0 } });
+}
+
+function answer(yes) {
+  state.queue[state.idx].known = yes;
+  state.session[yes ? 'yes' : 'no']++;
+  if (state.idx + 1 >= state.queue.length) go('done');
+  else go('study', { idx: state.idx + 1, turned: false });
+}
+
+document.addEventListener('click', e => {
+  const deckBtn = e.target.closest('[data-deck]');
+  if (deckBtn) return go('deck', { deckId: Number(deckBtn.dataset.deck) });
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  const act = el.dataset.act;
+  if (act === 'turn') return flip();
+  if (act === 'yes' || act === 'no') return answer(act === 'yes');
+  if (act === 'study') return startStudy(false);
+  if (act === 'retry') return startStudy(true);
+  go(act);
+});
+
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  if (e.target.id === 'newForm') {
+    const d = { id: nextId++, name: $('#deckName').value.trim() || 'Neuer Stapel', cards: [] };
+    decks.push(d);
+    return go('deck', { deckId: d.id });
+  }
+  if (e.target.id === 'importForm') {
+    deck().cards.push(...parseLines($('#importText').value).cards);
+    return go('deck');
+  }
+  if (e.target.id === 'addForm') {
+    deck().cards.push({ q: $('#q').value.trim(), a: $('#a').value.trim(), known: null });
+    return go('deck');
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (state.view !== 'study' || e.target.matches('input, textarea')) return;
+  if (e.key === ' ') { e.preventDefault(); flip(); }
+  if (state.turned && (e.key === 'j' || e.key === 'ArrowRight')) answer(true);
+  if (state.turned && (e.key === 'n' || e.key === 'ArrowLeft')) answer(false);
+});
+
+render();
+</script>
+</body>
+</html>

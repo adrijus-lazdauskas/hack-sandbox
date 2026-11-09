@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup C – Fokus</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #111111;
+    --muted: #767676;
+    --hair: #e6e6e6;
+    --accent: #d9480f;
+    --yes: #2b8a3e;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; background: none; border: 0; padding: 0; }
+  .mock-note { border-bottom: 1px solid var(--hair); color: var(--muted); font-size: 13px; text-align: center; padding: 4px 12px; }
+
+  .page { max-width: 680px; margin: 0 auto; padding: 28px 20px 80px; }
+  .page.wide { max-width: 1040px; }
+  header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 40px; }
+  .logo { font-family: var(--serif); font-size: 20px; font-style: italic; }
+  .logo b { color: var(--accent); font-style: normal; }
+  .link { color: var(--ink); border-bottom: 1px solid var(--ink); font-weight: 500; }
+  .link:hover { color: var(--accent); border-color: var(--accent); }
+  .link.muted { color: var(--muted); border-color: var(--hair); }
+  kbd { font-family: var(--mono); font-size: 12px; border: 1px solid var(--hair); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; color: var(--muted); background: #fafafa; }
+
+  h1 { font-family: var(--serif); font-weight: 400; font-size: 40px; line-height: 1.1; margin: 0 0 8px; letter-spacing: -.01em; }
+  .lead { color: var(--muted); margin: 0 0 32px; }
+  .label { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin: 0 0 8px; }
+
+  /* Deck rows */
+  .decks { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+  .decks li { border-bottom: 1px solid var(--hair); }
+  .decks button { width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 18px 0; text-align: left; }
+  .decks button:hover .dname { color: var(--accent); }
+  .dname { font-family: var(--serif); font-size: 22px; }
+  .dnum { font-family: var(--mono); font-size: 14px; align-self: center; }
+  .dmeta { font-size: 13px; color: var(--muted); }
+  .line { grid-column: 1 / -1; height: 2px; background: var(--hair); position: relative; }
+  .line span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink); }
+
+  /* Deck detail */
+  .numbers { display: flex; gap: 32px; margin: 8px 0 28px; flex-wrap: wrap; }
+  .numbers div { font-family: var(--mono); font-size: 28px; line-height: 1.1; }
+  .numbers small { display: block; font-family: system-ui, sans-serif; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+  .cta { display: inline-flex; align-items: center; gap: 12px; background: var(--ink); color: #fff; padding: 14px 22px; font-weight: 600; }
+  .cta:hover { background: var(--accent); }
+  .cta kbd { background: transparent; color: #bbb; border-color: #555; }
+  .toolbar { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 36px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th { text-align: left; font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); border-bottom: 1px solid var(--ink); padding: 8px 12px 8px 0; }
+  td { border-bottom: 1px solid var(--hair); padding: 12px 12px 12px 0; vertical-align: top; }
+  td.a { color: var(--muted); }
+  td.s { font-family: var(--mono); font-size: 13px; white-space: nowrap; }
+  .s-yes { color: var(--yes); } .s-no { color: var(--accent); } .s-new { color: var(--muted); }
+
+  /* Create + import on one page */
+  .create { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .name-input { width: 100%; font-family: var(--serif); font-size: 32px; border: 0; border-bottom: 1px solid var(--ink); padding: 4px 0 8px; margin-bottom: 28px; background: none; }
+  .name-input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { width: 100%; min-height: 300px; border: 1px solid var(--hair); padding: 14px; font-family: var(--mono); font-size: 13px; line-height: 1.7; resize: vertical; }
+  .help { font-size: 13px; color: var(--muted); margin: 8px 0 24px; }
+  .preview { border-top: 1px solid var(--ink); }
+  .preview ol { margin: 0; padding: 0; list-style: none; counter-reset: c; }
+  .preview li { counter-increment: c; display: grid; grid-template-columns: 32px 1fr; padding: 10px 0; border-bottom: 1px solid var(--hair); font-size: 14px; }
+  .preview li::before { content: counter(c); font-family: var(--mono); color: var(--muted); font-size: 12px; padding-top: 2px; }
+  .preview li.bad { color: var(--accent); }
+  .preview li.bad::before { content: "!"; color: var(--accent); }
+  .preview .pa { color: var(--muted); display: block; }
+  .summary { font-family: var(--mono); font-size: 13px; padding: 10px 0; }
+
+  /* Study */
+  .study { min-height: calc(100vh - 140px); display: flex; flex-direction: column; }
+  .progress-line { height: 2px; background: var(--hair); margin-bottom: 12px; }
+  .progress-line span { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+  .study-meta { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); }
+  .study-meta span:last-child { font-family: var(--mono); }
+  .q-area { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 48px 0; cursor: pointer; }
+  .q { font-family: var(--serif); font-size: 36px; line-height: 1.2; margin: 0; }
+  .ans { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--ink); font-family: var(--serif); font-size: 24px; line-height: 1.35; color: var(--ink); opacity: 0; transform: translateY(6px); transition: opacity .25s, transform .25s; }
+  .turned .ans { opacity: 1; transform: none; }
+  .keys { display: flex; gap: 12px; border-top: 1px solid var(--hair); padding-top: 18px; }
+  .key { flex: 1; display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border: 1px solid var(--ink); font-weight: 600; }
+  .key:hover { background: var(--ink); color: #fff; }
+  .key.yes:hover { background: var(--yes); border-color: var(--yes); }
+  .key.no:hover { background: var(--accent); border-color: var(--accent); }
+  .key:hover kbd { color: #fff; border-color: rgba(255,255,255,.5); background: transparent; }
+  .key.wide { flex: 1; justify-content: center; gap: 12px; }
+
+  /* Result */
+  .score { font-family: var(--serif); font-size: 96px; line-height: 1; margin: 10px 0 12px; }
+  .score small { font-size: 32px; color: var(--muted); }
+
+  @media (max-width: 760px) {
+    h1 { font-size: 32px; }
+    .name-input { font-size: 24px; }
+    .create { grid-template-columns: 1fr; gap: 24px; }
+    textarea { min-height: 200px; }
+    .q { font-size: 28px; }
+    .ans { font-size: 20px; }
+    .key kbd { display: none; }
+    .key { justify-content: center; }
+    table thead { display: none; }
+    table tr { display: grid; grid-template-columns: 1fr auto; border-bottom: 1px solid var(--hair); padding: 10px 0; }
+    td { border: 0; padding: 0 8px 0 0; }
+    td.a { grid-column: 1; grid-row: 2; }
+    td.s { grid-row: 1 / 3; grid-column: 2; }
+    .score { font-size: 72px; }
+  }
+</style>
+</head>
+<body>
+<div class="mock-note">Mockup C „Fokus“ · Beispieldaten, nichts wird gespeichert · Tastatur: <kbd>N</kbd> neuer Stapel, <kbd>Leertaste</kbd> umdrehen, <kbd>J</kbd>/<kbd>N</kbd> bewerten, <kbd>Esc</kbd> zurück</div>
+<div class="page" id="page"></div>
+
+<script>
+// Sample data in German. Cards: q = question, a = answer, known = true | false | null (not asked yet).
+const IMPORT_SAMPLE = [
+  'Was misst das BIP?;Den Wert aller in einem Jahr im Inland hergestellten Waren und Dienstleistungen',
+  'Was ist Inflation?;Ein anhaltender Anstieg des allgemeinen Preisniveaus',
+  'Wofür steht EZB?;Europäische Zentralbank',
+  'Was beschreibt die Phillips-Kurve?;Den Zusammenhang zwischen Inflation und Arbeitslosigkeit',
+  'Was ist der Leitzins?;Der Zins, zu dem sich Geschäftsbanken Geld bei der Zentralbank leihen',
+  'Stagflation – Stagnation plus Inflation'
+].join('\n');
+
+let nextId = 4;
+const decks = [
+  { id: 1, name: 'Biochemie – Aminosäuren', last: 'gestern', cards: [
+    ['Welche Aminosäure bildet Disulfidbrücken?', 'Cystein', true],
+    ['Wie viele proteinogene Aminosäuren gibt es?', '20 (plus Selenocystein und Pyrrolysin)', true],
+    ['Welche Aminosäure ist nicht chiral?', 'Glycin', true],
+    ['Was ist ein Zwitterion?', 'Ein Molekül mit positiver und negativer Ladung, nach außen neutral', false],
+    ['Welche Aminosäure hat einen Imidazolring?', 'Histidin', true],
+    ['Was ist der isoelektrische Punkt?', 'Der pH-Wert, bei dem die Nettoladung null ist', false],
+    ['Welche Aminosäuren sind aromatisch?', 'Phenylalanin, Tyrosin, Tryptophan', true],
+    ['Welche Bindung verknüpft Aminosäuren?', 'Die Peptidbindung', null]
+  ]},
+  { id: 2, name: 'Statistik I – Grundbegriffe', last: 'vor 3 Tagen', cards: [
+    ['Was ist der Median?', 'Der mittlere Wert einer geordneten Datenreihe', true],
+    ['Was misst die Varianz?', 'Die mittlere quadratische Abweichung vom Mittelwert', false],
+    ['Was ist ein p-Wert?', 'Die Wahrscheinlichkeit, unter H0 ein mindestens so extremes Ergebnis zu sehen', false],
+    ['Was ist ein Konfidenzintervall?', 'Ein Bereich, der den wahren Parameter mit festgelegter Sicherheit überdeckt', null],
+    ['Korrelation oder Kausalität?', 'Korrelation ist ein Zusammenhang, Kausalität eine Ursache-Wirkungs-Beziehung', true],
+    ['Was ist ein Fehler 1. Art?', 'H0 wird verworfen, obwohl sie stimmt', null]
+  ]},
+  { id: 3, name: 'Spanisch A2 – Verben', last: 'letzte Woche', cards: [
+    ['tener', 'haben', true], ['poder', 'können', true], ['querer', 'wollen, lieben', true],
+    ['salir', 'ausgehen, hinausgehen', false], ['conocer', 'kennen, kennenlernen', true]
+  ]}
+].map(d => ({ ...d, cards: d.cards.map(([q, a, known]) => ({ q, a, known })) }));
+
+const state = { view: 'home', deckId: 1, idx: 0, turned: false, queue: [], results: [] };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const deck = () => decks.find(d => d.id === state.deckId);
+const count = (d, v) => d.cards.filter(c => c.known === v).length;
+const pct = d => d.cards.length ? Math.round(count(d, true) / d.cards.length * 100) : 0;
+
+// Parse "Frage;Antwort" lines; keep every non-empty line so the preview can flag the broken ones.
+function parseLines(text) {
+  return text.split('\n').map((line, i) => {
+    if (!line.trim()) return null;
+    const at = line.indexOf(';');
+    const q = at < 0 ? '' : line.slice(0, at).trim();
+    const a = at < 0 ? '' : line.slice(at + 1).trim();
+    return { line: i + 1, raw: line, q, a, ok: Boolean(q && a) };
+  }).filter(Boolean);
+}
+
+function go(view, extra = {}) { Object.assign(state, { view }, extra); render(); window.scrollTo(0, 0); }
+
+const header = right => `<header><button class="logo" data-act="home">Lern<b>·</b>karten</button>${right || ''}</header>`;
+
+function render() {
+  const d = deck();
+  const page = $('#page');
+  page.classList.toggle('wide', state.view === 'new');
+  let html = '';
+
+  if (state.view === 'home') {
+    const all = decks.reduce((n, x) => n + x.cards.length, 0);
+    const yes = decks.reduce((n, x) => n + count(x, true), 0);
+    html = header(`<button class="link" data-act="new">Neuer Stapel <kbd>N</kbd></button>`) + `
+      <h1>Was lernst du heute?</h1>
+      <p class="lead">${decks.length} Stapel · ${yes} von ${all} Karten gewusst</p>
+      <ul class="decks">${decks.map(x => `<li><button data-deck="${x.id}">
+        <span class="dname">${esc(x.name)}</span><span class="dnum">${pct(x)} %</span>
+        <span class="dmeta">${x.cards.length} Karten · ${count(x, false)} nicht gewusst · zuletzt ${x.last}</span><span></span>
+        <span class="line"><span style="width:${pct(x)}%"></span></span>
+      </button></li>`).join('')}</ul>`;
+  }
+
+  if (state.view === 'new') {
+    html = header(`<button class="link muted" data-act="home">Abbrechen <kbd>Esc</kbd></button>`) + `
+      <form id="newForm" class="create">
+        <div>
+          <p class="label">Neuer Stapel</p>
+          <input class="name-input" id="deckName" value="Makroökonomie – Klausur" placeholder="Name des Stapels" required>
+          <p class="label">Karten einfügen</p>
+          <textarea id="importText" spellcheck="false">${esc(IMPORT_SAMPLE)}</textarea>
+          <p class="help">Eine Karte pro Zeile: <code>Frage;Antwort</code>. Leer lassen, wenn du Karten später einzeln anlegen willst.</p>
+          <button class="cta" id="createBtn">Stapel anlegen <kbd>⌘ ↵</kbd></button>
+        </div>
+        <div class="preview"><div class="summary" id="summary"></div><ol id="previewList"></ol></div>
+      </form>`;
+  }
+
+  if (state.view === 'deck') {
+    html = header(`<button class="link muted" data-act="home">Alle Stapel <kbd>Esc</kbd></button>`) + `
+      <h1>${esc(d.name)}</h1>
+      <div class="numbers">
+        <div>${pct(d)} %<small>gewusst</small></div>
+        <div>${count(d, false)}<small>nicht gewusst</small></div>
+        <div>${count(d, null)}<small>neu</small></div>
+      </div>
+      <div class="toolbar">
+        ${d.cards.length ? '<button class="cta" data-act="study">Abfrage starten <kbd>↵</kbd></button>' : ''}
+        <button class="link" data-act="add">Karte hinzufügen</button>
+      </div>
+      ${d.cards.length ? `<table><thead><tr><th>Frage</th><th>Antwort</th><th>Status</th></tr></thead><tbody>
+        ${d.cards.map(c => `<tr><td>${esc(c.q)}</td><td class="a">${esc(c.a)}</td>
+        <td class="s">${c.known === true ? '<span class="s-yes">● gewusst</span>' : c.known === false ? '<span class="s-no">● nicht gewusst</span>' : '<span class="s-new">○ neu</span>'}</td></tr>`).join('')}
+      </tbody></table>` : '<p class="lead">Noch keine Karten.</p>'}`;
+  }
+
+  if (state.view === 'add') {
+    html = header(`<button class="link muted" data-act="deck">Abbrechen <kbd>Esc</kbd></button>`) + `
+      <p class="label">${esc(d.name)}</p><h1>Neue Karte</h1>
+      <form id="addForm" style="margin-top:28px">
+        <p class="label">Frage</p><input class="name-input" id="q" value="Was ist Stagflation?" required>
+        <p class="label">Antwort</p><input class="name-input" id="a" style="font-size:22px" value="Stagnierende Wirtschaft bei gleichzeitig hoher Inflation" required>
+        <button class="cta">Speichern <kbd>↵</kbd></button>
+      </form>`;
+  }
+
+  if (state.view === 'study') {
+    const c = state.queue[state.idx];
+    html = `<div class="study ${state.turned ? 'turned' : ''}" id="study">
+      <div class="progress-line"><span style="width:${state.idx / state.queue.length * 100}%"></span></div>
+      <div class="study-meta"><span>${esc(d.name)} · <button class="link muted" data-act="deck">beenden</button></span><span>${state.idx + 1} / ${state.queue.length}</span></div>
+      <div class="q-area" data-act="turn">
+        <p class="q">${esc(c.q)}</p>
+        <div class="ans">${esc(c.a)}</div>
+      </div>
+      <div class="keys" id="keys">${keysHtml()}</div>
+    </div>`;
+  }
+
+  if (state.view === 'done') {
+    const yes = state.results.filter(Boolean).length, total = state.results.length;
+    html = header() + `<p class="label">Runde beendet · ${esc(d.name)}</p>
+      <div class="score">${yes}<small> / ${total} gewusst</small></div>
+      <p class="lead">Der Stapel steht jetzt bei ${pct(d)} %. ${total - yes ? `${total - yes} Karten brauchen noch eine Runde.` : 'Alles sitzt.'}</p>
+      <div class="toolbar">
+        ${total - yes ? '<button class="cta" data-act="retry">Nicht gewusste wiederholen <kbd>↵</kbd></button>' : ''}
+        <button class="link" data-act="deck">Zum Stapel</button>
+        <button class="link muted" data-act="home">Alle Stapel</button>
+      </div>`;
+  }
+
+  page.innerHTML = html;
+
+  const ta = $('#importText');
+  if (ta) {
+    const update = () => {
+      const rows = parseLines(ta.value);
+      const ok = rows.filter(r => r.ok).length, bad = rows.length - ok;
+      $('#summary').textContent = `${ok} Karten erkannt${bad ? ` · ${bad} Zeile${bad > 1 ? 'n' : ''} ohne ;` : ''}`;
+      $('#previewList').innerHTML = rows.map(r => r.ok
+        ? `<li><div>${esc(r.q)}<span class="pa">${esc(r.a)}</span></div></li>`
+        : `<li class="bad"><div>Zeile ${r.line}: ${esc(r.raw)}<span class="pa">wird übersprungen, es fehlt das „;“</span></div></li>`).join('');
+      $('#createBtn').innerHTML = `Stapel mit ${ok} Karten anlegen <kbd>⌘ ↵</kbd>`;
+    };
+    ta.addEventListener('input', update); update();
+  }
+}
+
+function keysHtml() {
+  return state.turned
+    ? `<button class="key no" data-act="no">Nicht gewusst <kbd>N</kbd></button><button class="key yes" data-act="yes">Gewusst <kbd>J</kbd></button>`
+    : `<button class="key wide" data-act="turn">Antwort zeigen <kbd>Leertaste</kbd></button>`;
+}
+function flip() {
+  state.turned = !state.turned;
+  $('#study').classList.toggle('turned', state.turned);
+  $('#keys').innerHTML = keysHtml();
+}
+function startStudy(onlyUnknown) {
+  const d = deck();
+  const queue = onlyUnknown ? d.cards.filter(c => c.known === false) : [...d.cards];
+  go('study', { queue, idx: 0, turned: false, results: [] });
+}
+function answer(yes) {
+  state.queue[state.idx].known = yes;
+  state.results.push(yes);
+  if (state.idx + 1 >= state.queue.length) go('done');
+  else go('study', { idx: state.idx + 1, turned: false });
+}
+function createDeck() {
+  const d = { id: nextId++, name: $('#deckName').value.trim() || 'Neuer Stapel', last: 'gerade eben',
+    cards: parseLines($('#importText').value).filter(r => r.ok).map(({ q, a }) => ({ q, a, known: null })) };
+  decks.push(d);
+  go('deck', { deckId: d.id });
+}
+
+document.addEventListener('click', e => {
+  const dk = e.target.closest('[data-deck]');
+  if (dk) return go('deck', { deckId: Number(dk.dataset.deck) });
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  const act = el.dataset.act;
+  if (act === 'turn') return state.turned ? null : flip();
+  if (act === 'yes' || act === 'no') return answer(act === 'yes');
+  if (act === 'study') return startStudy(false);
+  if (act === 'retry') return startStudy(true);
+  go(act);
+});
+
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  if (e.target.id === 'newForm') return createDeck();
+  if (e.target.id === 'addForm') { deck().cards.push({ q: $('#q').value.trim(), a: $('#a').value.trim(), known: null }); go('deck'); }
+});
+
+document.addEventListener('keydown', e => {
+  const typing = e.target.matches('input, textarea');
+  if (state.view === 'new' && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); return createDeck(); }
+  if (e.key === 'Escape') {
+    if (['deck', 'new', 'done'].includes(state.view)) return go('home');
+    if (['study', 'add'].includes(state.view)) return go('deck');
+  }
+  if (typing) return;
+  if (state.view === 'home' && e.key === 'n') return go('new');
+  if (state.view === 'deck' && e.key === 'Enter' && deck().cards.length) return startStudy(false);
+  if (state.view === 'done' && e.key === 'Enter' && state.results.includes(false)) return startStudy(true);
+  if (state.view !== 'study') return;
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (!state.turned) flip(); return; }
+  if (state.turned && e.key === 'j') answer(true);
+  if (state.turned && e.key === 'n') answer(false);
+});
+
+render();
+</script>
+</body>
+</html>

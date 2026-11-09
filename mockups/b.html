@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup B – Kacheln</title>
+<style>
+  :root {
+    --bg: #15141f;
+    --surface: #211f30;
+    --surface-2: #2b2940;
+    --text: #f4f2ff;
+    --muted: #a9a5c4;
+    --yes: #3ddc97;
+    --no: #ff6b6b;
+    --brand: #8b7bff;
+    --radius: 22px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--text); background: var(--bg); }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; border: 0; }
+  .mock-note { background: var(--brand); color: #fff; font-size: 13px; text-align: center; padding: 4px 12px; }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 20px 16px 110px; }
+  header.top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .hello { font-size: 14px; color: var(--muted); }
+  h1 { font-size: 30px; line-height: 1.15; margin: 2px 0 0; letter-spacing: -.02em; }
+  h2 { font-size: 18px; margin: 26px 0 12px; }
+
+  /* Deck tiles */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .tile { position: relative; text-align: left; border-radius: var(--radius); padding: 18px; min-height: 150px; color: #16131f; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 24px rgba(0,0,0,.25); transition: transform .15s; }
+  .tile:hover { transform: translateY(-2px); }
+  .tile .name { font-weight: 800; font-size: 19px; line-height: 1.2; max-width: 70%; }
+  .tile .meta { font-size: 14px; font-weight: 600; opacity: .75; }
+  .ring { position: absolute; top: 16px; right: 16px; width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center;
+    background: conic-gradient(#16131f calc(var(--p) * 1%), rgba(22,19,31,.15) 0); }
+  .ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--tile); }
+  .ring b { position: relative; font-size: 15px; }
+  .tile.add { background: transparent; border: 2px dashed var(--surface-2); color: var(--muted); align-items: center; justify-content: center; box-shadow: none; font-weight: 700; gap: 6px; }
+  .tile.add .plus { width: 44px; height: 44px; border-radius: 50%; background: var(--surface-2); display: grid; place-items: center; font-size: 26px; color: var(--text); }
+
+  /* Buttons */
+  .btn { border-radius: 16px; padding: 14px 18px; font-weight: 700; background: var(--surface-2); }
+  .btn.primary { background: var(--brand); color: #fff; }
+  .btn.big { width: 100%; padding: 18px; font-size: 18px; }
+  .icon-btn { width: 42px; height: 42px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; font-size: 20px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .row .btn { flex: 1; }
+
+  /* Deck hero */
+  .hero { border-radius: var(--radius); padding: 22px; color: #16131f; margin-bottom: 14px; }
+  .hero h1 { font-size: 26px; }
+  .hero .meta { font-weight: 600; opacity: .75; }
+  .hero .track { height: 10px; border-radius: 5px; background: rgba(22,19,31,.15); margin: 16px 0 8px; overflow: hidden; }
+  .hero .track span { display: block; height: 100%; background: #16131f; border-radius: 5px; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; font-weight: 700; }
+  .chips span { background: rgba(255,255,255,.45); padding: 4px 10px; border-radius: 99px; }
+
+  .cards { display: grid; gap: 8px; }
+  .mini { background: var(--surface); border-radius: 16px; padding: 14px 16px; display: grid; grid-template-columns: 10px 1fr; gap: 12px; align-items: start; }
+  .mini .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 7px; background: var(--surface-2); }
+  .mini .dot.yes { background: var(--yes); } .mini .dot.no { background: var(--no); }
+  .mini .q { font-weight: 600; } .mini .a { color: var(--muted); font-size: 14px; }
+
+  /* Bottom sheet */
+  .sheet-bg { position: fixed; inset: 0; background: rgba(5,4,12,.6); display: none; align-items: flex-end; justify-content: center; z-index: 20; }
+  .sheet-bg.open { display: flex; }
+  .sheet { background: var(--surface); width: 100%; max-width: 560px; border-radius: 26px 26px 0 0; padding: 12px 20px 28px; animation: up .25s ease-out; }
+  @keyframes up { from { transform: translateY(40px); opacity: 0; } }
+  .grab { width: 40px; height: 5px; border-radius: 3px; background: var(--surface-2); margin: 0 auto 16px; }
+  .sheet h2 { margin-top: 0; font-size: 22px; }
+  label.f { display: block; font-weight: 700; font-size: 14px; margin-bottom: 12px; }
+  label.f small { display: block; color: var(--muted); font-weight: 500; }
+  input[type=text], textarea { width: 100%; margin-top: 6px; background: var(--bg); border: 2px solid var(--surface-2); border-radius: 14px; padding: 12px 14px; }
+  textarea { min-height: 170px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; }
+  input:focus, textarea:focus { outline: none; border-color: var(--brand); }
+  .swatches { display: flex; gap: 10px; margin: 6px 0 16px; }
+  .swatch { width: 36px; height: 36px; border-radius: 50%; border: 3px solid transparent; }
+  .swatch.on { border-color: #fff; }
+  .parse { font-size: 14px; margin: -2px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill { padding: 4px 10px; border-radius: 99px; font-weight: 700; font-size: 13px; }
+  .pill.ok { background: rgba(61,220,151,.15); color: var(--yes); }
+  .pill.err { background: rgba(255,107,107,.15); color: var(--no); }
+
+  /* Study mode */
+  .study { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; min-height: calc(100vh - 140px); }
+  .study-head { display: flex; align-items: center; gap: 12px; }
+  .dots { flex: 1; display: flex; gap: 4px; }
+  .dots i { flex: 1; height: 6px; border-radius: 3px; background: var(--surface-2); }
+  .dots i.yes { background: var(--yes); } .dots i.no { background: var(--no); } .dots i.cur { background: var(--text); }
+  .count { font-weight: 700; color: var(--muted); font-size: 14px; }
+  .flip { flex: 1; min-height: 320px; perspective: 1400px; cursor: pointer; }
+  .flip-inner { position: relative; height: 100%; min-height: 320px; transition: transform .5s cubic-bezier(.2,.8,.2,1); transform-style: preserve-3d; }
+  .flip.turned .flip-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 28px; padding: 28px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 26px; font-weight: 800; line-height: 1.25; }
+  .face.front { background: var(--tile); color: #16131f; }
+  .face.answer { background: var(--surface); transform: rotateY(180deg); font-weight: 600; font-size: 22px; }
+  .face small { position: absolute; top: 20px; font-size: 13px; text-transform: uppercase; letter-spacing: .1em; opacity: .6; font-weight: 800; }
+  .face .tap { position: absolute; bottom: 20px; font-size: 14px; font-weight: 600; opacity: .6; }
+  .judge { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .judge button { border-radius: 20px; padding: 18px 10px; font-size: 17px; font-weight: 800; }
+  .judge .no { background: rgba(255,107,107,.15); color: var(--no); }
+  .judge .yes { background: var(--yes); color: #0d2a1d; }
+
+  /* Result */
+  .result { max-width: 460px; margin: 30px auto; text-align: center; }
+  .big-ring { width: 180px; height: 180px; margin: 0 auto 20px; border-radius: 50%; display: grid; place-items: center; position: relative;
+    background: conic-gradient(var(--yes) calc(var(--p) * 1%), var(--surface-2) 0); }
+  .big-ring::before { content: ""; position: absolute; inset: 16px; border-radius: 50%; background: var(--bg); }
+  .big-ring div { position: relative; }
+  .big-ring b { display: block; font-size: 44px; line-height: 1; }
+  .big-ring span { color: var(--muted); font-size: 14px; }
+  .result .row { margin-top: 20px; flex-direction: column; }
+
+  /* Progress tab */
+  .prog { background: var(--surface); border-radius: 18px; padding: 16px; margin-bottom: 10px; }
+  .prog-head { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 10px; gap: 12px; }
+  .stack-bar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: var(--surface-2); }
+  .stack-bar .y { background: var(--yes); } .stack-bar .n { background: var(--no); }
+  .legend { display: flex; gap: 14px; font-size: 13px; color: var(--muted); margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .kpi { background: var(--surface); border-radius: 18px; padding: 14px; }
+  .kpi b { display: block; font-size: 26px; }
+  .kpi span { color: var(--muted); font-size: 13px; }
+
+  /* Tab bar: bottom on phones, top-centre pill on desktop */
+  nav.tabs { position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px; display: flex; gap: 6px; background: rgba(33,31,48,.92); backdrop-filter: blur(10px); padding: 6px; border-radius: 22px; box-shadow: 0 10px 30px rgba(0,0,0,.4); z-index: 10; }
+  nav.tabs button { background: none; padding: 10px 18px; border-radius: 16px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  nav.tabs button.on { background: var(--surface-2); color: var(--text); }
+  body.studying nav.tabs { display: none; }
+
+  @media (min-width: 900px) {
+    .wrap { padding-top: 90px; }
+    nav.tabs { top: 44px; bottom: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="mock-note">Mockup B „Kacheln“ · Beispieldaten, nichts wird gespeichert</div>
+<div class="wrap" id="view"></div>
+<nav class="tabs" id="tabs">
+  <button data-tab="home" class="on">▦ Stapel</button>
+  <button data-tab="progress">◔ Fortschritt</button>
+</nav>
+<div class="sheet-bg" id="sheetBg"><div class="sheet" id="sheet"></div></div>
+
+<script>
+// Sample data in German. Cards: q = question, a = answer, known = true | false | null (not asked yet).
+const IMPORT_SAMPLE = [
+  'Was misst das BIP?;Den Wert aller in einem Jahr im Inland hergestellten Waren und Dienstleistungen',
+  'Was ist Inflation?;Ein anhaltender Anstieg des allgemeinen Preisniveaus',
+  'Wofür steht EZB?;Europäische Zentralbank',
+  'Was beschreibt die Phillips-Kurve?;Den Zusammenhang zwischen Inflation und Arbeitslosigkeit',
+  'Was ist der Leitzins?;Der Zins, zu dem sich Geschäftsbanken Geld bei der Zentralbank leihen'
+].join('\n');
+const COLORS = ['#ffcf5c', '#7be0c3', '#ff9fb5', '#a8b8ff', '#ffb27a'];
+
+let nextId = 4;
+const decks = [
+  { id: 1, name: 'Biochemie – Aminosäuren', color: COLORS[0], cards: [
+    ['Welche Aminosäure bildet Disulfidbrücken?', 'Cystein', true],
+    ['Wie viele proteinogene Aminosäuren gibt es?', '20 (plus Selenocystein und Pyrrolysin)', true],
+    ['Welche Aminosäure ist nicht chiral?', 'Glycin', true],
+    ['Was ist ein Zwitterion?', 'Ein Molekül mit positiver und negativer Ladung, nach außen neutral', false],
+    ['Welche Aminosäure hat einen Imidazolring?', 'Histidin', true],
+    ['Was ist der isoelektrische Punkt?', 'Der pH-Wert, bei dem die Nettoladung null ist', false],
+    ['Welche Aminosäuren sind aromatisch?', 'Phenylalanin, Tyrosin, Tryptophan', true],
+    ['Welche Bindung verknüpft Aminosäuren?', 'Die Peptidbindung', null]
+  ]},
+  { id: 2, name: 'Statistik I – Grundbegriffe', color: COLORS[1], cards: [
+    ['Was ist der Median?', 'Der mittlere Wert einer geordneten Datenreihe', true],
+    ['Was misst die Varianz?', 'Die mittlere quadratische Abweichung vom Mittelwert', false],
+    ['Was ist ein p-Wert?', 'Die Wahrscheinlichkeit, unter H0 ein mindestens so extremes Ergebnis zu sehen', false],
+    ['Was ist ein Konfidenzintervall?', 'Ein Bereich, der den wahren Parameter mit festgelegter Sicherheit überdeckt', null],
+    ['Korrelation oder Kausalität?', 'Korrelation ist ein Zusammenhang, Kausalität eine Ursache-Wirkungs-Beziehung', true],
+    ['Was ist ein Fehler 1. Art?', 'H0 wird verworfen, obwohl sie stimmt', null]
+  ]},
+  { id: 3, name: 'Spanisch A2 – Verben', color: COLORS[2], cards: [
+    ['tener', 'haben', true], ['poder', 'können', true], ['querer', 'wollen, lieben', true],
+    ['salir', 'ausgehen, hinausgehen', false], ['conocer', 'kennen, kennenlernen', true]
+  ]}
+].map(d => ({ ...d, cards: d.cards.map(([q, a, known]) => ({ q, a, known })) }));
+
+const state = { view: 'home', deckId: 1, idx: 0, turned: false, queue: [], results: [], color: COLORS[3] };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const deck = () => decks.find(d => d.id === state.deckId);
+const count = (d, v) => d.cards.filter(c => c.known === v).length;
+const pct = d => d.cards.length ? Math.round(count(d, true) / d.cards.length * 100) : 0;
+
+function parseLines(text) {
+  const cards = [], errors = [];
+  text.split('\n').forEach((line, i) => {
+    if (!line.trim()) return;
+    const at = line.indexOf(';');
+    const q = at < 0 ? '' : line.slice(0, at).trim();
+    const a = at < 0 ? '' : line.slice(at + 1).trim();
+    if (q && a) cards.push({ q, a, known: null }); else errors.push(i + 1);
+  });
+  return { cards, errors };
+}
+
+function go(view, extra = {}) { Object.assign(state, { view }, extra); closeSheet(); render(); window.scrollTo(0, 0); }
+
+function render() {
+  document.body.classList.toggle('studying', state.view === 'study' || state.view === 'done');
+  document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === (state.view === 'progress' ? 'progress' : 'home')));
+  const d = deck();
+  let html = '';
+
+  if (state.view === 'home') {
+    html = `<header class="top"><div><div class="hello">Hallo! Was lernst du heute?</div><h1>Deine Stapel</h1></div></header>
+      <div class="tiles">
+        ${decks.map(x => `<button class="tile" data-deck="${x.id}" style="background:${x.color};--tile:${x.color}">
+          <span class="ring" style="--p:${pct(x)}"><b>${pct(x)}%</b></span>
+          <span class="name">${esc(x.name)}</span>
+          <span class="meta">${x.cards.length} Karten · ${count(x, false)} offen</span>
+        </button>`).join('')}
+        <button class="tile add" data-act="new"><span class="plus">+</span>Neuer Stapel</button>
+      </div>`;
+  }
+
+  if (state.view === 'deck') {
+    html = `<header class="top"><button class="icon-btn" data-act="home" aria-label="Zurück">←</button><button class="icon-btn" aria-label="Mehr">⋯</button></header>
+      <section class="hero" style="background:${d.color}">
+        <h1>${esc(d.name)}</h1>
+        <div class="meta">${d.cards.length} Karten</div>
+        <div class="track"><span style="width:${pct(d)}%"></span></div>
+        <div class="chips"><span>${pct(d)} % gewusst</span><span>${count(d, false)} nicht gewusst</span><span>${count(d, null)} neu</span></div>
+      </section>
+      <button class="btn primary big" data-act="study" ${d.cards.length ? '' : 'disabled style="opacity:.5"'}>Jetzt lernen ▸</button>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" data-act="import">⇣ Text importieren</button>
+        <button class="btn" data-act="add">+ Karte</button>
+      </div>
+      <h2>Karten</h2>
+      ${d.cards.length ? `<div class="cards">${d.cards.map(c => `<div class="mini">
+        <span class="dot ${c.known === true ? 'yes' : c.known === false ? 'no' : ''}"></span>
+        <div><div class="q">${esc(c.q)}</div><div class="a">${esc(c.a)}</div></div></div>`).join('')}</div>`
+        : '<p style="color:var(--muted)">Noch leer. Tipp auf „Text importieren“ und füge deine Notizen ein.</p>'}`;
+  }
+
+  if (state.view === 'study') {
+    const c = state.queue[state.idx];
+    html = `<div class="study" style="--tile:${d.color}">
+      <div class="study-head">
+        <button class="icon-btn" data-act="deck" aria-label="Abbrechen">✕</button>
+        <div class="dots">${state.queue.map((_, i) => `<i class="${i < state.idx ? (state.results[i] ? 'yes' : 'no') : i === state.idx ? 'cur' : ''}"></i>`).join('')}</div>
+        <span class="count">${state.idx + 1}/${state.queue.length}</span>
+      </div>
+      <div class="flip ${state.turned ? 'turned' : ''}" data-act="turn">
+        <div class="flip-inner">
+          <div class="face front"><small>Frage</small>${esc(c.q)}<span class="tap">Tippen zum Umdrehen</span></div>
+          <div class="face answer"><small>Antwort</small>${esc(c.a)}</div>
+        </div>
+      </div>
+      <div class="judge" id="judge" style="visibility:${state.turned ? 'visible' : 'hidden'}">
+        <button class="no" data-act="no">✗ Nicht gewusst</button>
+        <button class="yes" data-act="yes">✓ Gewusst</button>
+      </div>
+    </div>`;
+  }
+
+  if (state.view === 'done') {
+    const yes = state.results.filter(Boolean).length, total = state.results.length;
+    const p = Math.round(yes / total * 100);
+    html = `<div class="result">
+      <div class="big-ring" style="--p:${p}"><div><b>${yes}/${total}</b><span>gewusst</span></div></div>
+      <h1>${p >= 80 ? 'Stark!' : p >= 50 ? 'Gut dabei!' : 'Weiter so!'}</h1>
+      <p style="color:var(--muted)">„${esc(d.name)}“ steht jetzt bei ${pct(d)} %.</p>
+      <div class="row">
+        ${total - yes ? `<button class="btn primary big" data-act="retry">${total - yes} nicht gewusste wiederholen</button>` : ''}
+        <button class="btn big" data-act="deck">Zurück zum Stapel</button>
+      </div>
+    </div>`;
+  }
+
+  if (state.view === 'progress') {
+    const all = decks.reduce((n, x) => n + x.cards.length, 0);
+    const yes = decks.reduce((n, x) => n + count(x, true), 0);
+    const no = decks.reduce((n, x) => n + count(x, false), 0);
+    html = `<header class="top"><div><div class="hello">Über alle Stapel</div><h1>Fortschritt</h1></div></header>
+      <div class="kpis">
+        <div class="kpi"><b>${all}</b><span>Karten</span></div>
+        <div class="kpi"><b style="color:var(--yes)">${yes}</b><span>gewusst</span></div>
+        <div class="kpi"><b style="color:var(--no)">${no}</b><span>nicht gewusst</span></div>
+      </div>
+      ${decks.map(x => `<div class="prog" data-deck="${x.id}" style="cursor:pointer">
+        <div class="prog-head"><span>${esc(x.name)}</span><span>${pct(x)} %</span></div>
+        <div class="stack-bar">
+          <span class="y" style="width:${x.cards.length ? count(x, true) / x.cards.length * 100 : 0}%"></span>
+          <span class="n" style="width:${x.cards.length ? count(x, false) / x.cards.length * 100 : 0}%"></span>
+        </div>
+        <div class="legend"><span><i style="background:var(--yes)"></i>${count(x, true)} gewusst</span><span><i style="background:var(--no)"></i>${count(x, false)} nicht gewusst</span><span><i style="background:var(--surface-2)"></i>${count(x, null)} neu</span></div>
+      </div>`).join('')}`;
+  }
+
+  $('#view').innerHTML = html;
+}
+
+// Bottom sheets for create, import and add.
+function openSheet(kind) {
+  const d = deck();
+  let html = '<div class="grab"></div>';
+  if (kind === 'new') {
+    html += `<h2>Neuer Stapel</h2><form id="newForm">
+      <label class="f">Name<input type="text" id="deckName" value="Makroökonomie – Klausur" required></label>
+      <label class="f">Farbe</label>
+      <div class="swatches">${COLORS.map(c => `<button type="button" class="swatch ${c === state.color ? 'on' : ''}" data-color="${c}" style="background:${c}" aria-label="Farbe"></button>`).join('')}</div>
+      <button class="btn primary big">Stapel anlegen</button></form>`;
+  }
+  if (kind === 'import') {
+    html += `<h2>Text importieren</h2><form id="importForm">
+      <label class="f">Füge deine Notizen ein<small>Eine Karte pro Zeile, Frage und Antwort mit ; getrennt</small>
+      <textarea id="importText">${esc(IMPORT_SAMPLE)}</textarea></label>
+      <div class="parse" id="parse"></div>
+      <button class="btn primary big" id="importBtn">Importieren</button></form>`;
+  }
+  if (kind === 'add') {
+    html += `<h2>Neue Karte</h2><form id="addForm">
+      <label class="f">Frage<input type="text" id="q" value="Was ist Stagflation?" required></label>
+      <label class="f">Antwort<input type="text" id="a" value="Stagnierende Wirtschaft bei gleichzeitig hoher Inflation" required></label>
+      <button class="btn primary big">Karte speichern</button></form>`;
+  }
+  $('#sheet').innerHTML = html;
+  $('#sheetBg').classList.add('open');
+  const ta = $('#importText');
+  if (ta) {
+    const update = () => {
+      const { cards, errors } = parseLines(ta.value);
+      $('#parse').innerHTML = `<span class="pill ok">✓ ${cards.length} Karten erkannt</span>` +
+        (errors.length ? `<span class="pill err">Zeile ${errors.join(', ')} übersprungen</span>` : '');
+      $('#importBtn').textContent = `${cards.length} Karten importieren`;
+    };
+    ta.addEventListener('input', update); update();
+  }
+}
+function closeSheet() { $('#sheetBg').classList.remove('open'); }
+
+function startStudy(onlyUnknown) {
+  const d = deck();
+  const queue = onlyUnknown ? d.cards.filter(c => c.known === false) : [...d.cards];
+  go('study', { queue, idx: 0, turned: false, results: [] });
+}
+function flip() {
+  state.turned = !state.turned;
+  $('.flip').classList.toggle('turned', state.turned);
+  $('#judge').style.visibility = state.turned ? 'visible' : 'hidden';
+}
+function answer(yes) {
+  state.queue[state.idx].known = yes;
+  state.results.push(yes);
+  if (state.idx + 1 >= state.queue.length) go('done');
+  else go('study', { idx: state.idx + 1, turned: false });
+}
+
+document.addEventListener('click', e => {
+  if (e.target.id === 'sheetBg') return closeSheet();
+  const sw = e.target.closest('[data-color]');
+  if (sw) { state.color = sw.dataset.color; document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('on', s === sw)); return; }
+  const tab = e.target.closest('[data-tab]');
+  if (tab) return go(tab.dataset.tab);
+  const dk = e.target.closest('[data-deck]');
+  if (dk) return go('deck', { deckId: Number(dk.dataset.deck) });
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  const act = el.dataset.act;
+  if (act === 'turn') return flip();
+  if (act === 'yes' || act === 'no') return answer(act === 'yes');
+  if (act === 'study') return startStudy(false);
+  if (act === 'retry') return startStudy(true);
+  if (['new', 'import', 'add'].includes(act)) return openSheet(act);
+  go(act);
+});
+
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  if (e.target.id === 'newForm') {
+    const d = { id: nextId++, name: $('#deckName').value.trim() || 'Neuer Stapel', color: state.color, cards: [] };
+    decks.push(d);
+    return go('deck', { deckId: d.id });
+  }
+  if (e.target.id === 'importForm') { deck().cards.push(...parseLines($('#importText').value).cards); return go('deck'); }
+  if (e.target.id === 'addForm') { deck().cards.push({ q: $('#q').value.trim(), a: $('#a').value.trim(), known: null }); return go('deck'); }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeSheet();
+  if (state.view !== 'study' || e.target.matches('input, textarea')) return;
+  if (e.key === ' ') { e.preventDefault(); flip(); }
+  if (state.turned && (e.key === 'j' || e.key === 'ArrowRight')) answer(true);
+  if (state.turned && (e.key === 'n' || e.key === 'ArrowLeft')) answer(false);
+});
+
+render();
+</script>
+</body>
+</html>
