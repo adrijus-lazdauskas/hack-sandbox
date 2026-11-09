@@ -1,8 +1,0 @@
-{
-  "name": "hack-sandbox",
-  "private": true,
-  "scripts": {
-    "build": "mkdir -p dist && cp index.html dist/index.html",
-    "test": "node -e \"require('fs').accessSync('index.html')\""
-  }
-}
